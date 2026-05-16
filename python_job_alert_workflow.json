@@ -1,0 +1,447 @@
+{
+  "name": "Python Job Alert — Suraj",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "1. Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        32
+      ],
+      "id": "96d0b2f4-2c75-4697-be1a-fa00cabaa335"
+    },
+    {
+      "parameters": {
+        "url": "https://jsearch.p.rapidapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "Python "
+            },
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "num_pages",
+              "value": "1"
+            },
+            {
+              "name": "date_posted",
+              "value": "today"
+            },
+            {
+              "name": "country",
+              "value": "in"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-RapidAPI-Key",
+              "value": "8ea2ecaa31msh7544b648ee5d79dp1c77e5jsnce34183cf5bf"
+            },
+            {
+              "name": "X-RapidAPI-Host",
+              "value": "jsearch.p.rapidapi.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "2. Fetch Python Jobs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -912,
+        32
+      ],
+      "id": "90562eb8-7777-4f1c-a7a2-74d707286f22"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.job_title }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": "Noida",
+              "id": "36d40a7c-7628-40a9-847f-4bae41604fd3"
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "name": "3. Filter by Location",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        32
+      ],
+      "id": "e53cd2e1-0b92-4eee-9f72-d862a021befc"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.job_title }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": 0,
+              "id": "ca2d9f9b-30ef-4b4b-8d56-41e167b0dc9d"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "4. New Jobs Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        32
+      ],
+      "id": "aa7a6bc4-4a13-4702-946e-3c2bb79e6581"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1y6rtn-bEJ_43_NDGMl1jRmeQtXVYgcmYx1hgoAQ6zJ4",
+          "mode": "list",
+          "cachedResultName": "Python Job Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y6rtn-bEJ_43_NDGMl1jRmeQtXVYgcmYx1hgoAQ6zJ4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y6rtn-bEJ_43_NDGMl1jRmeQtXVYgcmYx1hgoAQ6zJ4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ new Date().toLocaleDateString() }}",
+            "Company": "={{ $json.employer_name }}",
+            "Job ": "={{ $json.job_title }}",
+            "Location": "={{ $json.job_city }}",
+            "Remote": "={{ $json.job_is_remote }}",
+            "Apply Link": "={{ $json.job_apply_link }}",
+            "Salary": "={{ $json.job_min_salary }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Job ",
+              "displayName": "Job ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Remote",
+              "displayName": "Remote",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Apply Link",
+              "displayName": "Apply Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Salary",
+              "displayName": "Salary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "5. Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -480,
+        256
+      ],
+      "id": "9fe52152-1888-484d-8332-9bdd89a28f40",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hYs5HVTSet1bFjPP",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const jobs = $input.all();\n\nlet emailBody = `<h2>Python Developer Jobs — ${new Date().toDateString()}</h2>`;\nlet telegramText = `*🐍 Python Jobs Today — ${new Date().toDateString()}*\\n\\n`;\n\njobs.forEach((job, i) => {\n  const title = job.json[\"Job \"] || 'N/A';\n  const company = job.json[\"Company\"] || 'N/A';\n  const city = job.json[\"Location\"] || 'Remote';\n  const remote = job.json[\"Remote\"] || 'No';\n  const link = job.json[\"Apply Link\"] || '#';\n  const salary = job.json[\"Salary\"] || 'Not listed';\n\n  emailBody += `\n    <div style='margin-bottom:16px;padding:12px;border:1px solid #eee;border-radius:8px'>\n      <strong>${i + 1}. ${title}</strong><br/>\n      🏢 Company: ${company}<br/>\n      📍 Location: ${city}<br/>\n      🏠 Remote: ${remote}<br/>\n      💰 Salary: ${salary}<br/>\n      <a href='${link}'>✅ Apply Now</a>\n    </div>`;\n\n  telegramText += `*${i + 1}. ${title}*\\n`;\n  telegramText += `🏢 ${company}\\n`;\n  telegramText += `📍 ${city}\\n`;\n  telegramText += `🔗 ${link}\\n\\n`;\n});\n\nreturn [{ json: { emailBody, telegramText, jobCount: jobs.length } }];"
+      },
+      "name": "6. Format Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        256
+      ],
+      "id": "161750c8-4f35-4945-b87f-bc5977be92b2"
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL@gmail.com",
+        "subject": "=Python Jobs Today — {{ $json.jobCount }} new listings found!",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "name": "7a. Send Gmail Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        416
+      ],
+      "id": "89a41804-261b-456b-9da5-1497fe864047",
+      "webhookId": "22b7f71c-6409-4ab7-9046-fc6a2a1f8c6a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3c6WkX7X28zU4q21",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1281696894",
+        "text": "={{ $json.telegramText }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        128
+      ],
+      "id": "1aa0cc6e-01c3-4c5f-88f5-59598d722bbb",
+      "name": "Send a text message",
+      "webhookId": "31cb260b-c728-4f5f-ba48-5926d4cc488e",
+      "credentials": {
+        "telegramApi": {
+          "id": "hEjt5UDXRb6OW3Nn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst jobs = items[0].json.data;\n\nreturn jobs.map(job => ({\n  json: {\n    job_title: job.job_title || 'N/A',\n    employer_name: job.employer_name || 'N/A',\n    job_city: job.job_city || job.job_location || 'Remote',\n    job_is_remote: job.job_is_remote ? 'Yes' : 'No',\n    job_apply_link: job.job_apply_link || 'N/A',\n    job_min_salary: job.job_min_salary || 'Not listed'\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        32
+      ],
+      "id": "e13fb342-8496-45b9-ae47-2c24594827d9",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "1. Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "2. Fetch Python Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Fetch Python Jobs": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Filter by Location": {
+      "main": [
+        [
+          {
+            "node": "4. New Jobs Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. New Jobs Found?": {
+      "main": [
+        [
+          {
+            "node": "5. Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "6. Format Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6. Format Message": {
+      "main": [
+        [
+          {
+            "node": "7a. Send Gmail Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7a. Send Gmail Alert": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "3. Filter by Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5e1ff571-d1f1-4bc5-a210-721322b6ee33",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "23598afb123ed42a30a4ea4bc266670a3f398bcfec498dd0c89d3748b5414fbc"
+  },
+  "id": "tbkFoTbuuBfGk9KW",
+  "tags": []
+}
