@@ -12,7 +12,7 @@
 
 ## 📸 Workflow Preview
 
-> *(Add your n8n workflow screenshot here)*
+> ![Workflow](workflow.png)
 
 ```
 ⏰ Schedule Trigger (9AM Daily)
